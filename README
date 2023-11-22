@@ -1,0 +1,14 @@
+INPUTS
+for input, files input.txt with first line as the number of tasks, and 
+each line then phase, relative_deadline, criticality_lvl, and exec time for
+each criticality level
+
+file input_times.txt first line as number of tasks, each line then giving 
+the actual exec times for each corresponding tasks.
+
+file input_allocation.txt giving task to core mapping
+
+file input_cores that contains x factor and criticality threshold for each core
+
+
+
