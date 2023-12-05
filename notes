@@ -1,3 +1,3 @@
-crit change one core means crit change for all cores (system wide)
-arrival+departure of jobs
-add temp. discarded queue for each core
+[-]crit change one core means crit change for all cores (system wide)
+[-]arrival+departure of jobs (the case of two decision points at the same time will be handled on the next invocation of the find_decision_point function)
+[ ]add temp. discarded queue for each core

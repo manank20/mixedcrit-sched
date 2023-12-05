@@ -13,6 +13,9 @@ processor_struct *initialize_processor(){
         processor->cores[i].ready_queue = (job_queue_struct *)malloc(sizeof(job_queue_struct));
         processor->cores[i].ready_queue->num_jobs = 0;
         processor->cores[i].ready_queue->job_list_head = NULL;
+        processor->cores[i].local_discarded_queue = (job_queue_struct *)malloc(sizeof(job_queue_struct));
+        processor->cores[i].local_discarded_queue->num_jobs = 0;
+        processor->cores[i].local_discarded_queue->job_list_head = NULL;
         processor->cores[i].curr_exec_job = NULL;
         processor->cores[i].total_time = 0.0f;
         processor->cores[i].total_idle_time = 0.0f;

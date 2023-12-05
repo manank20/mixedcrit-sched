@@ -61,7 +61,7 @@ double find_earliest_arrival_job(task_set_struct *task_set, int core_no, int cur
 
     Postconditions: 
         Output: {the decision point, decision time}
-        Decision point = ARRIVAL or COMPLETION or TIMER_EXPIRE or CRIT_CHANGE
+        Decision point = ARRIVAL or COMPLETION or TIMER_EXPIRE_ERR or CRIT_CHANGE
         
   
 */
@@ -118,7 +118,7 @@ decision_struct find_decision_point(task_set_struct *task_set, processor_struct 
             }
             else if (decision_time == expiry_time)
             {
-                decision_point = TIMER_EXPIRE;
+                decision_point = TIMER_EXPIRE_ERR;
             }
             else if (decision_time == WCET_counter)
             {

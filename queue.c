@@ -12,9 +12,11 @@
     Postconditions:
         Output: {null}
 */
-void insert_job_in_discarded_queue(job_queue_struct **discarded_queue, job *new_job, task *task_list, int core_no)
+void insert_job_in_discarded_queue(processor_struct **processor, job *new_job, task *task_list, int core_no)
 {
     job *temp;
+
+    job_queue_struct **discarded_queue = (&(*processor)->cores[core_no].local_discarded_queue);
 
     if ((*discarded_queue)->num_jobs == 0)
     {
@@ -43,40 +45,44 @@ void insert_job_in_discarded_queue(job_queue_struct **discarded_queue, job *new_
     }
 }
 
-void remove_jobs_from_discarded_queue(job_queue_struct **discarded_queue, double curr_time)
+void remove_jobs_from_discarded_queue(processor_struct **processor, double curr_time)
 {
-    job *free_job, *prev, *curr, *dummy_node;
-    dummy_node = malloc(sizeof(job));
-    dummy_node->next = (*discarded_queue)->job_list_head;
-    dummy_node->task_number = -1;
-    dummy_node->job_number = -1;
+    for(int i = 0; i < NUM_CORES; i++){
 
-    prev = dummy_node;
-    curr = (*discarded_queue)->job_list_head;
+        job_queue_struct **discarded_queue = &(*processor)->cores[i].local_discarded_queue;
 
-    while(curr != NULL)
-    {
-        // printf("Prev: %d,%d. Curr: %d,%d\n", prev->task_number, prev->job_number, curr->task_number, curr->job_number);
-        if(curr->absolute_deadline <= curr_time)
+        job *free_job, *prev, *curr, *dummy_node;
+        dummy_node = malloc(sizeof(job));
+        dummy_node->next = (*discarded_queue)->job_list_head;
+        dummy_node->task_number = -1;
+        dummy_node->job_number = -1;
+
+        prev = dummy_node;
+        curr = (*discarded_queue)->job_list_head;
+
+        while(curr != NULL)
         {
-            free_job = curr;
-            prev->next = curr->next;
-            curr = curr->next;
-            free_job->next = NULL;
-            (*discarded_queue)->num_jobs--;
-            // free(free_job);
+            // printf("Prev: %d,%d. Curr: %d,%d\n", prev->task_number, prev->job_number, curr->task_number, curr->job_number);
+            if(curr->absolute_deadline <= curr_time)
+            {
+                free_job = curr;
+                prev->next = curr->next;
+                curr = curr->next;
+                free_job->next = NULL;
+                (*discarded_queue)->num_jobs--;
+                // free(free_job);
+            }
+            else
+            {
+                prev = curr;
+                curr = curr->next;
+            }
         }
-        else
-        {
-            prev = curr;
-            curr = curr->next;
-        }
+
+        (*discarded_queue)->job_list_head = dummy_node->next;
+        dummy_node->next = NULL;
+        free(dummy_node);
     }
-
-    (*discarded_queue)->job_list_head = dummy_node->next;
-    dummy_node->next = NULL;
-    free(dummy_node);
-
     return;
 }
 
@@ -139,7 +145,7 @@ void insert_job_in_ready_queue(job_queue_struct **ready_queue, job *new_job)
         Output: {void}
         Result: The job queue will now contain only high criticality jobs.
 */
-void remove_jobs_from_ready_queue(job_queue_struct **ready_queue, job_queue_struct **discarded_queue, task *task_list, int curr_crit_lvl, int k, int core_no)
+void remove_jobs_from_ready_queue(job_queue_struct **ready_queue, processor_struct **processor, task *task_list, int curr_crit_lvl, int k, int core_no)
 {
     job *free_job, *dummy_node, *prev, *curr;
     dummy_node = malloc(sizeof(job));
@@ -160,7 +166,7 @@ void remove_jobs_from_ready_queue(job_queue_struct **ready_queue, job_queue_stru
             (*ready_queue)->num_jobs--;
             free_job->next = NULL;
             stats->total_discarded_jobs_available[core_no] += free_job->rem_exec_time;
-            insert_job_in_discarded_queue(discarded_queue, free_job, task_list, core_no);
+            insert_job_in_discarded_queue(processor, free_job, task_list, core_no);
         }
         else
         {

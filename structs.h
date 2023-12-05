@@ -17,7 +17,7 @@
 //Decision points
 #define ARRIVAL 0
 #define COMPLETION 1
-#define TIMER_EXPIRE 2 //error point
+#define TIMER_EXPIRE_ERR 2 
 #define CRIT_CHANGE 3
 
 //State of core
@@ -100,7 +100,7 @@ struct job
     double WCET_counter;
     int job_number;
     int task_number;
-    struct job *next; //not required
+    struct job *next; 
 };
 
 typedef struct job job;
@@ -135,6 +135,7 @@ typedef struct job_queue_struct
 typedef struct core_struct
 {
     job_queue_struct *ready_queue;
+    job_queue_struct *local_discarded_queue;
     job *curr_exec_job;
 
     double total_time;
@@ -168,7 +169,7 @@ typedef struct processor_struct
 
 /*
     ADT for the decision point:
-        It contains the type of decision point (ARRIVAL or COMPLETION or TIMER_EXPIRE or CRIT_CHANGE), the decision time and the core for which decision has to be taken.
+        It contains the type of decision point (ARRIVAL or COMPLETION or TIMER_EXPIRE_ERR or CRIT_CHANGE), the decision time and the core for which decision has to be taken.
 */
 typedef struct decision_struct
 {

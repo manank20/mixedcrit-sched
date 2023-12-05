@@ -163,7 +163,7 @@ void schedule_taskset(task_set_struct *task_set, processor_struct *processor)
         }
 
         //Remove the jobs from discarded queue that have missed their deadlines.
-        remove_jobs_from_discarded_queue(&discarded_queue, decision_time);
+        remove_jobs_from_discarded_queue(&processor, decision_time);
 
         //Store the previous decision time of core for any further use.
         prev_decision_time = processor->cores[decision_core].total_time;
@@ -287,7 +287,7 @@ void schedule_taskset(task_set_struct *task_set, processor_struct *processor)
                     //First remove the low criticality jobs from ready queue and insert it into discarded queue.
                     if (processor->cores[num_core].ready_queue->num_jobs != 0)
                     {
-                        remove_jobs_from_ready_queue(&processor->cores[num_core].ready_queue, &discarded_queue, task_list, processor->crit_level, processor->cores[num_core].threshold_crit_lvl, num_core);
+                        remove_jobs_from_ready_queue(&processor->cores[num_core].ready_queue, &processor, task_list, processor->crit_level, processor->cores[num_core].threshold_crit_lvl, num_core);
                     }
 
                     if (processor->cores[num_core].ready_queue->num_jobs != 0)

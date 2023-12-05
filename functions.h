@@ -75,10 +75,10 @@ extern x_factor_struct check_schedulability(task_set_struct *task_set, int core_
 /*---------------------------------------------------------------------*/
 
 /*---------------------------QUEUE FUNCTIONS---------------------------*/
-extern void insert_job_in_discarded_queue(job_queue_struct **discarded_queue, job *new_job, task *task_list, int core_no);
-extern void remove_jobs_from_discarded_queue(job_queue_struct **discarded_queue, double curr_time);
+extern void insert_job_in_discarded_queue(processor_struct **processor, job *new_job, task *task_list, int core_no);
+extern void remove_jobs_from_discarded_queue(processor_struct **processor, double curr_time);
 extern void insert_job_in_ready_queue(job_queue_struct **ready_queue, job *new_job);
-extern void remove_jobs_from_ready_queue(job_queue_struct **ready_queue, job_queue_struct **discarded_queue, task *task_list, int curr_crit_lvl, int k, int core_no);
+extern void remove_jobs_from_ready_queue(job_queue_struct **ready_queue, processor_struct **processor, task *task_list, int curr_crit_lvl, int k, int core_no);
 /*---------------------------------------------------------------------*/
 
 /*---------------------------AUXILIARY FUNCTIONS---------------------------*/
